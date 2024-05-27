@@ -1,31 +1,21 @@
 ﻿#include <fstream>
 #include <iostream>
-#include <string>
-#include <stdlib.h>
-#include <time.h>
 using namespace std;
 
-class player {
-public:
-	int money = 200;
-private:
-
-};
-
-player player1;
-
 void printLogo();
-void startUp();
+void startUp(int& money, int& bet);
+
+
 
 int main() {
 
-	srand(time(NULL));
+	int money = 200;
+	int bet = 0;
+
+
 
 	printLogo();
-	startUp();
-
-
-
+	startUp(money, bet);
 
 	system("pause");
 	return 0;
@@ -43,8 +33,24 @@ void printLogo()
 }
 //prints logo
 
-void startUp() {
+void startUp(int& money, int& bet) {
 
+	cout << "You currently have " << money << " chips." << endl;
+	cout << "how much do you want to bet?: ";
 
-	cout << "You currently have " << player1.money <<" chips. Good Luck!" << endl;
+	do {
+		cin >> bet;
+		if (bet <= 0) {
+			cout << "You need to bet a valid ammount! \n";
+		}
+		else if (bet > money) {
+			cout << "You can't bet more money than what you have! \n";
+		}
+		else
+		{
+			money -= bet;
+		}
+	} while (bet <= 0 || bet > money);
 }
+//asks the user how much they want to bet and saves and removes it from the player's money
+
