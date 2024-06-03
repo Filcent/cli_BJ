@@ -16,15 +16,19 @@ int main() {
 	int money = 200;
 	int bet = 0;
 
+	random_device rd;
+	uniform_int_distribution<int> dist(1, 13);
 	vector <int> dealerCards = {};
 	vector <int> playerCards = {};
 
 	printLogo();
 	startUp(money, bet);
-	
 
-	dealerCards.push_back(1);	//TODO: use randomly generated value from 1 (ace) to 13 (king) to assign cards 
-	playerCards.push_back(1);	//TODO: make the card dealing repetable (duh)
+	dealerCards.push_back(dist(rd));	//TODO: use randomly generated value from 1 (ace) to 13 (king) to assign cards 
+	for (int card : dealerCards) {
+		cout << card << ' ';
+	}
+//	playerCards.push_back(1);	//TODO: make the card dealing repetable (duh)
 							
 								//TODO: add a something to "translate"  1,11,12 and 13 to A,J,Q and K
 	
