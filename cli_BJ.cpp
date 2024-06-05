@@ -15,6 +15,7 @@ int dealerTotal = 0;
 
 void printLogo();
 void startUp();
+void betting();
 void showCards();
 void game();
 
@@ -65,21 +66,26 @@ void startUp() {
 	cout << "You currently have " << money << " chips." << endl;
 	cout << "how much do you want to bet?: ";
 
-	do {
+	betting();
+}
+//asks the user how much they want to bet 
+
+void betting() {
 		cin >> bet;
 		if (bet <= 0) {
 			cout << "You need to bet a valid ammount! \n";
+			betting();
 		}
 		else if (bet > money) {
 			cout << "You can't bet more money than what you have! \n";
+			betting();
 		}
 		else
 		{
 			money -= bet;
 		}
-	} while (bet <= 0 || bet > money+bet);
-}
-//asks the user how much they want to bet and saves and removes it from the player's money
+	}
+//saves and removes the bet from the player's money
 
 void showCards() {
 	cout << "Dealer card(s): ";
