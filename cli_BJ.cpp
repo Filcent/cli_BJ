@@ -33,7 +33,8 @@ int main() {
 
 	showCards();
 
-	dealerCards.push_back(dist(rd));
+	dealerCards.push_back(dist(rd));	//gives the dealer the "hidden" card
+	
 	for (int i : dealerCards) {
 		dealerTotal += i;
 	}
@@ -95,7 +96,7 @@ void showCards() {
 
 	cout << endl;
 }
-//shows all of the dealer and the player's cards
+//shows all of the dealer AND the player's cards
 
 void game() {
 
@@ -111,6 +112,15 @@ void game() {
 		playerCards.push_back(dist(rd));
 		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
 	}
+			playerTotal = 0;
+		for (int i : playerCards) {
+			playerTotal += i;
+		}
+
+		if (playerTotal > 21) {
+			cout << "Player Bust!" << endl;
+			break;
+		}
 	case 'S': {
 		break;		//breaks the switch case, and makes 
 	}
