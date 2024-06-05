@@ -8,18 +8,20 @@ using namespace std;
 
 int money = 200;
 int bet = 0;
-	vector <int> dealerCards = {};
-	vector <int> playerCards = {};
-
+vector <int> dealerCards = {};
+vector <int> playerCards = {};
+int playerTotal = 0;
+int dealerTotal = 0;
 
 void printLogo();
 void startUp();
 void showCards();
 void game();
 
+random_device rd;
+uniform_int_distribution<int> dist(1, 13);
+
 int main() {
-	random_device rd;
-	uniform_int_distribution<int> dist(1, 13);
 
 	printLogo();
 	startUp();
@@ -31,8 +33,11 @@ int main() {
 
 	showCards();
 
+	dealerCards.push_back(dist(rd));
+	for (int i : dealerCards) {
+		dealerTotal += i;
+	}
 	game();
-
 
 //TODO: make the card dealing repetable (duh)
 							
@@ -96,8 +101,6 @@ void game() {
 
 	char choice;
 
-	random_device rd;
-	uniform_int_distribution<int> dist(1, 13);
 
 	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards)";
 	cin >> choice;
