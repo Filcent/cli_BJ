@@ -91,19 +91,22 @@ void betting() {
 
 void showCards() {
 
+	/*
 	map<int, char> cards;
 	cards[1] = 'A';
 	for (int i = 2; i <= 10; i++) {
-		cards[i] = i;
+		cards[i] = (char)i;		//does not work
 	}
-	cards[11] = 'J';
-	cards[12] = 'Q';
-	cards[13] = 'K';
-
-
+	cards[11] = 'J';		//does not work
+	cards[12] = 'Q';		//does not work
+	cards[13] = 'K';		//does not work
+	*/
+	
 	cout << "Dealer card(s): ";
-	for (int card : dealerCards) {
-		cout << card << ' ';
+	for (int i = 0; i < size(dealerCards); i++ ) {
+
+		cout << cards[dealerCards[i]] << ' ';
+	
 	}
 
 	cout << endl;
