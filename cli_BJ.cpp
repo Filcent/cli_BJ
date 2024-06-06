@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <random>
-
 using namespace std;
 
 int money = 200;
@@ -12,12 +11,14 @@ vector <int> dealerCards = {};
 vector <int> playerCards = {};
 int playerTotal = 0;
 int dealerTotal = 0;
+//make all of this shit into a class or two or something
 
 void printLogo();
 void startUp();
 void betting();
 void showCards();
 void game();
+//void dealToDealer(){}  <-- this should happen when player cards value <21 and said "Stay"
 
 random_device rd;
 uniform_int_distribution<int> dist(1, 13);
@@ -109,42 +110,41 @@ void game() {
 	char choice;
 
 
-	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards)";
+	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards): ";
 	cin >> choice;
 
 	switch (choice)
 	{
-	case 'H': {
+	case 'H': case 'h': {
 		playerCards.push_back(dist(rd));
 		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
-	}
-			playerTotal = 0;
+		playerTotal = 0;
 		for (int i : playerCards) {
 			playerTotal += i;
 		}
-
 		if (playerTotal > 21) {
 			cout << "Player Bust!" << endl;
 			break;
 		}
-	case 'S': {
-		break;		//breaks the switch case, and makes 
 	}
-	case 'D': {
+	case 'S': case 's': {
+		break;		//breaks the switch case, and makes the dealer get cards
+	}
+	case 'D': case 'd': {
 		if (bet*2 <= money){
 			bet *= 2; money -= bet/2;
 		}
 		else {
-		cout << "Not enought money to Double down!" << endl;
+		cout << "Not enough money to Double down!" << endl;
 		game();
 		}
 		break;
 	}
-	case 'G': {
+	case 'G': case 'g': {
 		money += bet / 2;
 		break;
 	}
-	case 'C': {
+	case 'C': case 'c': {
 		showCards();
 		game();
 	}
