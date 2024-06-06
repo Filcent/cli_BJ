@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <map>
 using namespace std;
 
 int money = 200;
@@ -89,6 +90,17 @@ void betting() {
 //saves and removes the bet from the player's money
 
 void showCards() {
+
+	map<int, char> cards;
+	cards[1] = 'A';
+	for (int i = 2; i <= 10; i++) {
+		cards[i] = i;
+	}
+	cards[11] = 'J';
+	cards[12] = 'Q';
+	cards[13] = 'K';
+
+
 	cout << "Dealer card(s): ";
 	for (int card : dealerCards) {
 		cout << card << ' ';
@@ -154,3 +166,4 @@ void game() {
 	}
 
 }
+
