@@ -18,7 +18,7 @@ void printLogo();
 void startUp();
 void betting();
 void showCards();
-void game();
+void game();;
 //void dealToDealer(){}  <-- this should happen when player cards value <21 and said "Stay"
 
 random_device rd;
@@ -38,9 +38,36 @@ int main() {
 
 	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
 	
-	for (int i : dealerCards) {
-		dealerTotal += i;
+	for (int i = 0; i < size(dealerCards); i++) {
+
+		switch (dealerCards[i])
+		{
+		case 1: {
+			/*
+			if(dealerTotal + 11 <= 21){
+				dealerTotal +11
+			}
+			else{
+				dealerTotal+1
+			}
+
+			TODO: something like this for the player too?
+			*/
+		}
+
+		case 11: case 12: case 13: {
+			dealerTotal += 10;
+		}
+
+		default: 
+			dealerTotal += dealerCards[i];
+			break;
+		}
+
+
 	}
+	//makes it so A,J,Q,K have their true value... perhaps put this into a function (for the player too)? 
+
 	game();
 
 //TODO: make the card dealing repetable (duh)
@@ -172,4 +199,3 @@ void game() {
 	}
 
 }
-
