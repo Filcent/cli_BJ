@@ -36,7 +36,7 @@ int main() {
 
 	showCards();
 
-	dealerCards.push_back(dist(rd));	//gives the dealer the "hidden" card
+	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
 	
 	for (int i : dealerCards) {
 		dealerTotal += i;
@@ -91,16 +91,15 @@ void betting() {
 
 void showCards() {
 
-	/*
 	map<int, char> cards;
+
 	cards[1] = 'A';
 	for (int i = 2; i <= 10; i++) {
-		cards[i] = (char)i;		//does not work
+		cards[i] = (char)i+48;		//adds 48 to the int value, turning it into its char equivalent (ASCII table) 
 	}
-	cards[11] = 'J';		//does not work
-	cards[12] = 'Q';		//does not work
-	cards[13] = 'K';		//does not work
-	*/
+	cards[11] = 'J';		
+	cards[12] = 'Q';		
+	cards[13] = 'K';	//translates the values into chars to be displayed
 	
 	cout << "Dealer card(s): ";
 	for (int i = 0; i < size(dealerCards); i++ ) {
@@ -112,8 +111,8 @@ void showCards() {
 	cout << endl;
 
 	cout << "Player cards: ";
-	for (int card : playerCards) {
-		cout << card << ' ';
+	for (int i = 0; i < size(playerCards); i++) {
+		cout << cards[playerCards[i]] << ' ';
 	}
 
 	cout << endl;
@@ -132,11 +131,15 @@ void game() {
 	{
 	case 'H': case 'h': {
 		playerCards.push_back(dist(rd));
+		
 		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
+		
 		playerTotal = 0;
+		
 		for (int i : playerCards) {
 			playerTotal += i;
 		}
+
 		if (playerTotal > 21) {
 			cout << "Player Bust!" << endl;
 			break;
