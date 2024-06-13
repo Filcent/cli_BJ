@@ -5,12 +5,12 @@
 #include <random>
 #include <map>
 #include <windows.h>
-using namespace std;
+
 
 int money = 200;
 int bet = 0;
-vector <int> dealerCards = {};
-vector <int> playerCards = {};
+std::vector <int> dealerCards = {};
+std::vector <int> playerCards = {};
 int playerTotal = 0;
 int dealerTotal = 0;
 int* a = &bet;
@@ -22,12 +22,12 @@ void startUp();
 void betting();
 void showCards();
 void game();
-void cardTranslator(vector<int> whoseCards, int& whoseTotal);
+void cardTranslator(std::vector<int> whoseCards, int& whoseTotal);
 void endGame();
 //void dealToDealer(){}  <-- this should happen when player cards value <=21 and said "Stay"
 
-random_device rd;
-uniform_int_distribution<int> dist(1, 13);
+std::random_device rd;
+std::uniform_int_distribution<int> dist(1, 13);
 
 int main() {
 
@@ -57,11 +57,11 @@ int main() {
 
 void printLogo()
 {
-	ifstream in("logo.txt");			//takes logo.txt ads input
-	string lString;						//defines the first line of the file
+	std::ifstream in("logo.txt");			//takes logo.txt ads input
+	std::string lString;						//defines the first line of the file
 	while (getline(in, lString))		//while it is reading something...
 	{
-		cout << lString << endl;		//print that thing
+		std::cout << lString << std::endl;		//print that thing
 	}
 	in.close();
 }
@@ -72,41 +72,41 @@ void startUp() {
 	char cashOut;
 
 	if (money == 0) {
-		cout << "You currently have... ";
+		std::cout << "You currently have... ";
 		Sleep(1500);
-		cout << "oh... \n";
+		std::cout << "oh... \n";
 		Sleep(1500);
-		cout << "We're sorry, but we don't offer chip exchange at the table. you'll have to go back to the cashier. (Game over) \n";
+		std::cout << "We're sorry, but we don't offer chip exchange at the table. you'll have to go back to the cashier. (Game over) \n";
 		system("pause");
 		exit(0);
 	}
 
-	cout << "You currently have " << money << " chips. (press 'C' to cash out, 'P' to play)" << endl;
-	cin >> cashOut;
+	std::cout << "You currently have " << money << " chips. (press 'C' to cash out, 'P' to play)" << std::endl;
+	std::cin >> cashOut;
 	if (cashOut == 'c' || cashOut == 'C') {
-		string name;
+		std:: string name;
 
-		cout << "You think about walking home with your money... besides, what even is your name? (C to go back to the blackjack table): \n";
-		cin >> name;
+		std::cout << "You think about walking home with your money... besides, what even is your name? (C to go back to the blackjack table): \n";
+		std::cin >> name;
 		if (name == "C" || name == "c") {
-			cout << "now that you think about it, playing a few more hands doesn't sound so bad afterall. What's the worse that can happen, right?";
+			std::cout << "now that you think about it, playing a few more hands doesn't sound so bad afterall. What's the worse that can happen, right?";
 		}
 		else {
-			ofstream hiScore;
-			hiScore.open("Scoreboard.txt", fstream::app);
+			std::ofstream hiScore;
+			hiScore.open("Scoreboard.txt", std::fstream::app);
 			hiScore << name << " : " << money << "\n";
 			hiScore.close();
 			if (money > 200) {
-				cout << "*You go home with your money, satisfied you won something* \n";
+				std::cout << "*You go home with your money, satisfied you won something* \n";
 			}
 			else if (money > 1000) {
-				cout << "*you go home feeling like a little kid. That's a lot of money right there!* \n";
+				std::cout << "*you go home feeling like a little kid. That's a lot of money right there!* \n";
 			}
 			if (money < 200) {
-				cout << "*You go home with your wallet feeling a little lighter than before. You wonder how you're going to make that money back...* \n";
+				std::cout << "*You go home with your wallet feeling a little lighter than before. You wonder how you're going to make that money back...* \n";
 			}
 			if (money == 200) {
-				cout << "*You go home on a net zero. Hey, winning nothing that's better than loosing something!* \n";
+				std::cout << "*You go home on a net zero. Hey, winning nothing that's better than loosing something!* \n";
 			}
 			exit(0);
 		}
@@ -115,23 +115,23 @@ void startUp() {
 	betting();
 	}
 	else {
-		cout << "Pick a valid decision \n";
+		std::cout << "Pick a valid decision \n";
 		startUp();
 	}
 }
 
 void betting() {
 	bet = 0;
-	cout << "how much do you want to bet?: ";
+	std::cout << "how much do you want to bet?: ";
 
-	cin >> bet;
+	std::cin >> bet;
 
 	if (bet <= 0) {
-		cout << "You need to bet a valid ammount! \n";
+		std::cout << "You need to bet a valid ammount! \n";
 		betting();
 	}
 	else if (bet > money) {
-		cout << "You can't bet more money than what you have! \n";
+		std::cout << "You can't bet more money than what you have! \n";
 		betting();
 	}
 	else
@@ -142,7 +142,7 @@ void betting() {
 
 void showCards() {
 
-	map<int, string> cards;
+	std::map<int, std::string> cards;
 
 	cards[1] = 'A';
 	for (int i = 2; i <= 10; i++) {
@@ -154,25 +154,25 @@ void showCards() {
 	cards[13] = 'K';	//translates the values into chars to be displayed
 
 
-	cout << "Dealer card(s): ";
+	std::cout << "Dealer card(s): ";
 	if (dealerTurn == 1) {		//display all of the dealer's cards only if its their turn
 		for (int i = 0; i < size(dealerCards); i++) {
 
-			cout << cards[dealerCards[i]] << ' ';
+			std::cout << cards[dealerCards[i]] << ' ';
 
 		}
 	}
 	else {		//display only the non-hidden dealer card
-		cout << cards[dealerCards[0]];
+		std::cout << cards[dealerCards[0]];
 	}
-	cout << endl;
+	std::cout << std::endl;
 
-	cout << "Player cards: ";
+	std::cout << "Player cards: ";
 	for (int i = 0; i < size(playerCards); i++) {
-		cout << cards[playerCards[i]] << ' ';
+		std::cout << cards[playerCards[i]] << ' ';
 	}
 
-	cout << endl;
+	std::cout << std::endl;
 }
 //shows the cards correctly according to whose turn it is
 
@@ -186,7 +186,7 @@ void game() {
 			endGame();			//if the blackjack is a push it gets handled by the endGame function
 		}
 		else {
-			cout << "Player blackjack! \n";
+			std::cout << "Player blackjack! \n";
 			money += (bet / 2) * 3;		//if not, the player gets payed 3:2
 			system("pause");
 			main();
@@ -194,14 +194,14 @@ void game() {
 	} //handles player blackjack
 
 	if (dealerTotal == 21) {
-		cout << "Dealer has a natural... \n";
+		std::cout << "Dealer has a natural... \n";
 		system("pause");
 		main();
 	}
 	// the push should be handled by the if above. ATM, there is no insurance
 
-	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
-	cin >> choice;
+	std::cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
+	std::cin >> choice;
 
 	switch (choice)
 	{
@@ -211,7 +211,7 @@ void game() {
 
 		if (playerTotal > 21) {
 			showCards();
-			cout << "Player Bust!" << endl;
+			std::cout << "Player Bust!" << std::endl;
 			system("pause");
 			main();
 		}
@@ -230,7 +230,7 @@ void game() {
 			showCards();
 			Sleep(1500);
 			if (playerTotal > 21) {		//if they bust that's it
-				cout << "Player Bust!" << endl;
+				std::cout << "Player Bust!" << std::endl;
 				system("pause");			//let them look at what they have done
 				main();
 			}
@@ -239,14 +239,14 @@ void game() {
 			}
 		}
 		else {
-			cout << "Not enough money to Double down! (your current bet is " << bet << " and you only have " << money << " chips)" << endl;	//if they're dumb then remind them
+			std::cout << "Not enough money to Double down! (your current bet is " << bet << " and you only have " << money << " chips)" << std::endl;	//if they're dumb then remind them
 			game();
 		}
 		break;
 	}
 	case 'G': case 'g': {	//Surrender
 		money += bet / 2;	//gives the user half of their bet
-		cout << "You have been given back half of your bet (" << bet / 2 << ")";
+		std::cout << "You have been given back half of your bet (" << bet / 2 << ")";
 		Sleep(3000);
 		main();				//restarts the program
 	}
@@ -254,7 +254,7 @@ void game() {
 		game();				//Sends you back at the beginning, where there is showCards()... oh the illusion...
 	}
 	default:
-		cout << "invalid option! " << endl;	//just in case the user is an idiot who tries to cheat (or missclicks)
+		std::cout << "invalid option! " << std::endl;	//just in case the user is an idiot who tries to cheat (or missclicks)
 		game();								//calls the function and makes the player pick again
 	}
 
@@ -270,17 +270,17 @@ void endGame() {
 		showCards();
 	}
 	if (playerTotal == dealerTotal) {
-		cout << "It's a push! \n";
+		std::cout << "It's a push! \n";
 		money += bet;
 	}
 	else if (dealerTotal > 21 || playerTotal > dealerTotal) {
 		Sleep(1500);
-		cout << "Player wins! \n";
+		std::cout << "Player wins! \n";
 		money += bet * 2;
 	}
 	else {
 		Sleep(1500);
-		cout << "Dealer wins..." << endl;
+		std::cout << "Dealer wins..." << std::endl;
 	}
 
 	system("pause");
@@ -288,7 +288,7 @@ void endGame() {
 	main();
 }
 
-void cardTranslator(vector<int> whoseCards, int& whoseTotal) {
+void cardTranslator(std::vector<int> whoseCards, int& whoseTotal) {
 
 	whoseTotal = 0;
 
