@@ -81,7 +81,7 @@ void startUp() {
 		exit(0);
 	}
 
-	cout << "You currently have " << money << " chips. (press 'C' to cash out, anything else to play)" << endl;
+	cout << "You currently have " << money << " chips. (press 'C' to cash out, 'P' to play)" << endl;
 	cin >> cashOut;
 	if (cashOut == 'c' || cashOut == 'C') {
 		string name;
@@ -105,13 +105,19 @@ void startUp() {
 			if (money < 200) {
 				cout << "*You go home with your wallet feeling a little lighter than before. You wonder how you're going to make that money back...* \n";
 			}
-			if (money = 200) {
+			if (money == 200) {
 				cout << "*You go home on a net zero. Hey, winning nothing that's better than loosing something!* \n";
 			}
 			exit(0);
 		}
 	}
+	else if(cashOut == 'p' || cashOut == 'P'){
 	betting();
+	}
+	else {
+		cout << "Pick a valid decision \n";
+		startUp();
+	}
 }
 
 void betting() {
@@ -122,11 +128,11 @@ void betting() {
 
 	if (bet <= 0) {
 		cout << "You need to bet a valid ammount! \n";
-		startUp();
+		betting();
 	}
 	else if (bet > money) {
 		cout << "You can't bet more money than what you have! \n";
-		startUp();
+		betting();
 	}
 	else
 	{
@@ -188,7 +194,9 @@ void game() {
 	} //handles player blackjack
 
 	if (dealerTotal == 21) {
-		cout << "Dealer has a natural...";
+		cout << "Dealer has a natural... \n";
+		system("pause");
+		main();
 	}
 	// the push should be handled by the if above. ATM, there is no insurance
 
@@ -214,14 +222,14 @@ void game() {
 		endGame(); //goes to the fuction that gives the dealer their cards
 	}
 	case 'D': case 'd': {
-		if (bet * 2 <= money) {
+		if (bet <= money) {
 			bet *= 2;		//if the player has enough cash double the bet
 			money -= bet / 2; //and take away the money
 			playerCards.push_back(dist(rd));
 			cardTranslator(playerCards, playerTotal);	//give the player the cards
 			showCards();
+			Sleep(1500);
 			if (playerTotal > 21) {		//if they bust that's it
-				showCards();
 				cout << "Player Bust!" << endl;
 				system("pause");			//let them look at what they have done
 				main();
