@@ -11,14 +11,20 @@ int bet = 0;
 vector <int> dealerCards = {};
 vector <int> playerCards = {};
 int playerTotal = 0;
+
+int* ptPTR = &playerTotal;
+
 int dealerTotal = 0;
+
+int* dtPTR = &dealerTotal;
 //make all of this shit into a class or two or something
 
 void printLogo();
 void startUp();
 void betting();
 void showCards();
-void game();;
+void game();
+void cardTranslator(vector<int>& whoseCards, int& whoseTotal);
 //void dealToDealer(){}  <-- this should happen when player cards value <21 and said "Stay"
 
 random_device rd;
@@ -30,42 +36,17 @@ int main() {
 	startUp();
 
 	dealerCards.push_back(dist(rd));	//gives dealer 1 card
+	cardTranslator(dealerCards, dealerTotal);
 
 	playerCards.push_back(dist(rd));
-	playerCards.push_back(dist(rd));	//gives player 2 cards
+
+	playerCards.push_back(dist(rd));	
+	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
 	showCards();
 
 	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
 	
-	for (int i = 0; i < size(dealerCards); i++) {
-
-		switch (dealerCards[i])
-		{
-		case 1: {
-			/*
-			if(dealerTotal + 11 <= 21){
-				dealerTotal +11
-			}
-			else{
-				dealerTotal+1
-			}
-
-			TODO: something like this for the player too?
-			*/
-		}
-
-		case 11: case 12: case 13: {
-			dealerTotal += 10;
-		}
-
-		default: 
-			dealerTotal += dealerCards[i];
-			break;
-		}
-
-
-	}
 	//makes it so A,J,Q,K have their true value... perhaps put this into a function (for the player too)? 
 
 	game();
@@ -160,14 +141,9 @@ void game() {
 		playerCards.push_back(dist(rd));
 		
 		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
-		
-		playerTotal = 0;
-		
-		for (int i : playerCards) {
-			playerTotal += i;
-		}
+		cardTranslator(playerCards, playerTotal);	//this works!? 
 
-		if (playerTotal > 21) {
+		if (playerTotal > 21) {	
 			cout << "Player Bust!" << endl;
 			break;
 		}
@@ -199,3 +175,41 @@ void game() {
 	}
 
 }
+
+void cardTranslator(vector<int>& whoseCards, int& whoseTotal) {
+	
+	whoseTotal = 0;
+	
+	for (int i = 0; i < size(whoseCards); i++) {
+
+		switch (whoseCards[i])
+		{
+		case 1: {
+
+			if (whoseTotal + 11 <= 21) {
+
+				whoseTotal += 11;
+			}
+			else {
+				whoseTotal += 1;
+			}
+			break;
+		}
+
+		case 11:
+		case 12:
+		case 13: {
+			whoseTotal += 10;
+			break;
+		}
+
+		default: {
+			whoseTotal += whoseCards[i];
+			break;
+		}
+		}
+
+	}
+}
+
+//this also updates whoseTotal 
