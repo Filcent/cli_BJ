@@ -201,7 +201,7 @@ void endGame() {
 		dealerCards.push_back(dist(rd));
 		cardTranslator(dealerCards, dealerTotal);
 		showCards();
-		Sleep(1000)
+		Sleep(1000);
 		}
 	if (dealerTotal > 21 || playerTotal > dealerTotal) {
 		cout << "Player wins!";
