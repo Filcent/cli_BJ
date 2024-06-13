@@ -30,6 +30,13 @@ uniform_int_distribution<int> dist(1, 13);
 
 int main() {
 
+	dealerTurn = 0;	
+	dealerCards = {};
+	dealerCards = {};	//i'm not sure this will work tbh
+	playerTotal = 0;
+	dealerTotal = 0;
+	//initializes everything back to 0
+
 	system("cls");
 	printLogo();
 	startUp();
@@ -42,20 +49,7 @@ int main() {
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	/*
-	if (playerTotal == 21 || dealerTotal != 21) {
-		showCards();
-		cout << "Player's Blackjack!";
-		money += (bet / 2) * 3;
-	}
-	else if (playerTotal == 21 || dealerTotal == 21) {
-		showCards();
-		cout << "It's a push!";
-		money += bet;
-	}
-	//This is not good. To be reworked later
-	*/
-
+	
 	game();
 
 	return 1;
@@ -110,7 +104,7 @@ void showCards() {
 	
 
 	cout << "Dealer card(s): ";
-	if(dealerTurn = 1){		//display all of the dealer's cards only if its their turn
+	if(dealerTurn == 1){		//display all of the dealer's cards only if its their turn
 		for (int i = 0; i < size(dealerCards); i++ ) {
 
 			cout << cards[dealerCards[i]] << ' ';
@@ -166,7 +160,7 @@ void game() {
 				if (playerTotal > 21) {		//if they bust that's it
 					showCards();
 					cout << "Player Bust!" << endl;
-					Sleep(3000);			//let them look at what they have done
+					system("pause");			//let them look at what they have done
 					main();
 				}
 				else {
@@ -203,14 +197,18 @@ void endGame() {
 		showCards();
 		Sleep(1000);
 		}
+	if(playerTotal == dealerTotal){
+		cout << "It's a push! \n";
+		money += bet;
+	}
 	if (dealerTotal > 21 || playerTotal > dealerTotal) {
-		cout << "Player wins!";
+		cout << "Player wins! \n";
 		money += bet * 2;
 	}
 	else {
-		cout << "Dealer wins!";
+		cout << "Dealer wins! \n";
 	}
-	Sleep(3000);
+	system("pause");
 
 	main();
 }
