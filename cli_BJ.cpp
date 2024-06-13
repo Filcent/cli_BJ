@@ -49,10 +49,26 @@ int main() {
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
+	if (playerTotal == 21) {
+		if (dealerTotal == 21) {
+			endGame();			//if the blackjack is a push it gets handled by the endGame function
+		}
+		else {
+			cout << "Player blackjack! \n";
+			money += (bet / 2) * 3;		//if not, the player gets payed 3:2
+			system("pause");
+			main();
+		}
+	} //handles player blackjack
+
+	if (dealerTotal == 21) {
+		cout << "Dealer has a natural...";
+	}
+	// the push should be handled by the if above. ATM, there is no insurance
 
 	game();
 
-	return 1;
+	return 1;	//if this happens, something REALLY bad happened
 }
 
 void printLogo()
