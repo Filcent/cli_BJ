@@ -31,8 +31,8 @@ uniform_int_distribution<int> dist(1, 13);
 int main() {
 
 	dealerTurn = 0;	
-	dealerCards = {};
-	dealerCards = {};	//i'm not sure this will work tbh
+	dealerCards.clear();
+	playerCards.clear();
 	playerTotal = 0;
 	dealerTotal = 0;
 	//initializes everything back to 0
@@ -49,7 +49,7 @@ int main() {
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	
+
 	game();
 
 	return 1;
@@ -92,12 +92,13 @@ void startUp() {
 
 void showCards() {
 
-	map<int, char> cards;
+	map<int, string> cards;
 
 	cards[1] = 'A';
 	for (int i = 2; i <= 10; i++) {
 		cards[i] = (char)i+48;		//adds 48 to the int value, turning it into its char equivalent (ASCII table) 
 	}
+	cards[10] = "10";
 	cards[11] = 'J';		
 	cards[12] = 'Q';		
 	cards[13] = 'K';	//translates the values into chars to be displayed
@@ -142,6 +143,7 @@ void game() {
 		if (playerTotal > 21) {
 			showCards();
 			cout << "Player Bust!" << endl;
+			system("pause");
 			main();
 		}
 		game();
@@ -206,8 +208,9 @@ void endGame() {
 		money += bet * 2;
 	}
 	else {
-		cout << "Dealer wins! \n";
+		cout << "Dealer wins..." << endl;
 	}
+
 	system("pause");
 
 	main();
