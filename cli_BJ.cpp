@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <map>
 using namespace std;
 
 int money = 200;
@@ -10,7 +11,12 @@ int bet = 0;
 vector <int> dealerCards = {};
 vector <int> playerCards = {};
 int playerTotal = 0;
+
+int* ptPTR = &playerTotal;
+
 int dealerTotal = 0;
+
+int* dtPTR = &dealerTotal;
 //make all of this shit into a class or two or something
 
 void printLogo();
@@ -18,6 +24,7 @@ void startUp();
 void betting();
 void showCards();
 void game();
+void cardTranslator(vector<int>& whoseCards, int& whoseTotal);
 //void dealToDealer(){}  <-- this should happen when player cards value <21 and said "Stay"
 
 random_device rd;
@@ -29,17 +36,15 @@ int main() {
 	startUp();
 
 	dealerCards.push_back(dist(rd));	//gives dealer 1 card
+	cardTranslator(dealerCards, dealerTotal);
 
 	playerCards.push_back(dist(rd));
-	playerCards.push_back(dist(rd));	//gives player 2 cards
 
-	showCards();
+	playerCards.push_back(dist(rd));	
+	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	dealerCards.push_back(dist(rd));	//gives the dealer the "hidden" card
-	
-	for (int i : dealerCards) {
-		dealerTotal += i;
-	}
+	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
+
 	game();
 
 //TODO: make the card dealing repetable (duh)
@@ -67,38 +72,51 @@ void startUp() {
 	cout << "You currently have " << money << " chips." << endl;
 	cout << "how much do you want to bet?: ";
 
-	betting();
-}
+	cin >> bet;
+
+	if (bet <= 0) {
+		cout << "You need to bet a valid ammount! \n";
+		startUp();
+	}
+	else if (bet > money) {
+		cout << "You can't bet more money than what you have! \n";
+		startUp();
+	}
+	else
+	{
+		money -= bet;
+	}
+	}
+
 //asks the user how much they want to bet 
 
-void betting() {
-		cin >> bet;
-		if (bet <= 0) {
-			cout << "You need to bet a valid ammount! \n";
-			betting();
-		}
-		else if (bet > money) {
-			cout << "You can't bet more money than what you have! \n";
-			betting();
-		}
-		else
-		{
-			money -= bet;
-		}
-	}
+
 //saves and removes the bet from the player's money
 
 void showCards() {
+
+	map<int, char> cards;
+
+	cards[1] = 'A';
+	for (int i = 2; i <= 10; i++) {
+		cards[i] = (char)i+48;		//adds 48 to the int value, turning it into its char equivalent (ASCII table) 
+	}
+	cards[11] = 'J';		
+	cards[12] = 'Q';		
+	cards[13] = 'K';	//translates the values into chars to be displayed
+	
 	cout << "Dealer card(s): ";
-	for (int card : dealerCards) {
-		cout << card << ' ';
+	for (int i = 0; i < size(dealerCards); i++ ) {
+
+		cout << cards[dealerCards[i]] << ' ';
+	
 	}
 
 	cout << endl;
 
 	cout << "Player cards: ";
-	for (int card : playerCards) {
-		cout << card << ' ';
+	for (int i = 0; i < size(playerCards); i++) {
+		cout << cards[playerCards[i]] << ' ';
 	}
 
 	cout << endl;
@@ -109,23 +127,26 @@ void game() {
 
 	char choice;
 
+	showCards();
 
-	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards): ";
+	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
 	cin >> choice;
 
 	switch (choice)
 	{
 	case 'H': case 'h': {
 		playerCards.push_back(dist(rd));
-		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
-		playerTotal = 0;
-		for (int i : playerCards) {
-			playerTotal += i;
-		}
-		if (playerTotal > 21) {
+		
+	
+		cardTranslator(playerCards, playerTotal);	//this works!? 
+
+		if (playerTotal > 21) {	
+			showCards();
 			cout << "Player Bust!" << endl;
 			break;
 		}
+		game();	
+		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
 	}
 	case 'S': case 's': {
 		break;		//breaks the switch case, and makes the dealer get cards
@@ -154,3 +175,40 @@ void game() {
 	}
 
 }
+
+void cardTranslator(vector<int>& whoseCards, int& whoseTotal) {
+	
+	whoseTotal = 0;
+	
+	for (int i = 0; i < size(whoseCards); i++) {
+
+		switch (whoseCards[i])
+		{
+		case 1: {
+
+			if (whoseTotal + 11 <= 21) {
+
+				whoseTotal += 11;
+			}
+			else {
+				whoseTotal += 1;
+			}
+			break;
+		}
+
+		case 11:
+		case 12:
+		case 13: {
+			whoseTotal += 10;
+			break;
+		}
+
+		default: {
+			whoseTotal += whoseCards[i];
+			break;
+		}
+		}
+
+	}
+}
+//this also updates whoseTotal 
