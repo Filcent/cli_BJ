@@ -43,11 +43,7 @@ int main() {
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	showCards();
-
 	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
-	
-	//makes it so A,J,Q,K have their true value... perhaps put this into a function (for the player too)? 
 
 	game();
 
@@ -76,25 +72,25 @@ void startUp() {
 	cout << "You currently have " << money << " chips." << endl;
 	cout << "how much do you want to bet?: ";
 
-	betting();
-}
+	cin >> bet;
+
+	if (bet <= 0) {
+		cout << "You need to bet a valid ammount! \n";
+		startUp();
+	}
+	else if (bet > money) {
+		cout << "You can't bet more money than what you have! \n";
+		startUp();
+	}
+	else
+	{
+		money -= bet;
+	}
+	}
+
 //asks the user how much they want to bet 
 
-void betting() {
-		cin >> bet;
-		if (bet <= 0) {
-			cout << "You need to bet a valid ammount! \n";
-			betting();
-		}
-		else if (bet > money) {
-			cout << "You can't bet more money than what you have! \n";
-			betting();
-		}
-		else
-		{
-			money -= bet;
-		}
-	}
+
 //saves and removes the bet from the player's money
 
 void showCards() {
@@ -131,8 +127,9 @@ void game() {
 
 	char choice;
 
+	showCards();
 
-	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards): ";
+	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
 	cin >> choice;
 
 	switch (choice)
@@ -140,13 +137,16 @@ void game() {
 	case 'H': case 'h': {
 		playerCards.push_back(dist(rd));
 		
-		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
+	
 		cardTranslator(playerCards, playerTotal);	//this works!? 
 
 		if (playerTotal > 21) {	
+			showCards();
 			cout << "Player Bust!" << endl;
 			break;
 		}
+		game();	
+		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
 	}
 	case 'S': case 's': {
 		break;		//breaks the switch case, and makes the dealer get cards
@@ -211,5 +211,4 @@ void cardTranslator(vector<int>& whoseCards, int& whoseTotal) {
 
 	}
 }
-
 //this also updates whoseTotal 
