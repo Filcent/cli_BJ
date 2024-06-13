@@ -13,12 +13,13 @@ vector <int> dealerCards = {};
 vector <int> playerCards = {};
 int playerTotal = 0;
 int dealerTotal = 0;
-
+int* a = &bet;
 bool dealerTurn = 0;
 //make all of this shit into a class or two or something
 
 void printLogo();
 void startUp();
+void betting();
 void showCards();
 void game();
 void cardTranslator(vector<int> whoseCards, int& whoseTotal);
@@ -49,23 +50,6 @@ int main() {
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	if (playerTotal == 21) {
-		if (dealerTotal == 21) {
-			endGame();			//if the blackjack is a push it gets handled by the endGame function
-		}
-		else {
-			cout << "Player blackjack! \n";
-			money += (bet / 2) * 3;		//if not, the player gets payed 3:2
-			system("pause");
-			main();
-		}
-	} //handles player blackjack
-
-	if (dealerTotal == 21) {
-		cout << "Dealer has a natural...";
-	}
-	// the push should be handled by the if above. ATM, there is no insurance
-
 	game();
 
 	return 1;	//if this happens, something REALLY bad happened
@@ -84,10 +68,24 @@ void printLogo()
 //prints logo
 
 void startUp() {
+	
 
-	bet = 0;
+	if (money == 0) {
+		cout << "You currently have... ";
+		Sleep(1500);
+		cout << "oh... \n";
+		Sleep(1500);
+		cout << "We're sorry, but we don't offer chip exchange at the table. you'll have to go back to the cashier. (Game over) \n";
+		system("pause");
+		exit(0);
+	}
 
 	cout << "You currently have " << money << " chips." << endl;
+	betting();
+}
+
+void betting() {
+	bet = 0;
 	cout << "how much do you want to bet?: ";
 
 	cin >> bet;
@@ -104,7 +102,7 @@ void startUp() {
 	{
 		money -= bet;
 	}
-	}
+}
 
 void showCards() {
 
@@ -147,6 +145,23 @@ void game() {
 	char choice;
 	showCards();
 
+	if (playerTotal == 21) {
+		if (dealerTotal == 21) {
+			endGame();			//if the blackjack is a push it gets handled by the endGame function
+		}
+		else {
+			cout << "Player blackjack! \n";
+			money += (bet / 2) * 3;		//if not, the player gets payed 3:2
+			system("pause");
+			main();
+		}
+	} //handles player blackjack
+
+	if (dealerTotal == 21) {
+		cout << "Dealer has a natural...";
+	}
+	// the push should be handled by the if above. ATM, there is no insurance
+
 	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
 	cin >> choice;
 
@@ -186,7 +201,7 @@ void game() {
 				}
 		}
 		else {
-		cout << "Not enough money to Double down! (your current bet is " << bet << " and you only have " << money << " money)" << endl;	//if they're dumb then remind them
+		cout << "Not enough money to Double down! (your current bet is " << bet << " and you only have " << money << " chips)" << endl;	//if they're dumb then remind them
 		game();
 		}
 		break;
@@ -212,19 +227,21 @@ void endGame() {
 	showCards();
 	while (dealerTotal < 17) {
 		dealerCards.push_back(dist(rd));
+		Sleep(1500);		
 		cardTranslator(dealerCards, dealerTotal);
 		showCards();
-		Sleep(1500);
 		}
 	if(playerTotal == dealerTotal){
 		cout << "It's a push! \n";
 		money += bet;
 	}
 	else if (dealerTotal > 21 || playerTotal > dealerTotal) {
+		Sleep(1500);
 		cout << "Player wins! \n";
 		money += bet * 2;
 	}
 	else {
+		Sleep(1500);
 		cout << "Dealer wins..." << endl;
 	}
 
