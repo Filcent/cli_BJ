@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 #include <map>
+#include <windows.h>
 using namespace std;
 
 int money = 200;
@@ -11,48 +12,53 @@ int bet = 0;
 vector <int> dealerCards = {};
 vector <int> playerCards = {};
 int playerTotal = 0;
-
-int* ptPTR = &playerTotal;
-
 int dealerTotal = 0;
 
-int* dtPTR = &dealerTotal;
+bool dealerTurn = 0;
 //make all of this shit into a class or two or something
 
 void printLogo();
 void startUp();
-void betting();
 void showCards();
 void game();
-void cardTranslator(vector<int>& whoseCards, int& whoseTotal);
-//void dealToDealer(){}  <-- this should happen when player cards value <21 and said "Stay"
+void cardTranslator(vector<int> whoseCards, int& whoseTotal);
+void endGame();
+//void dealToDealer(){}  <-- this should happen when player cards value <=21 and said "Stay"
 
 random_device rd;
 uniform_int_distribution<int> dist(1, 13);
 
 int main() {
 
+	system("cls");
 	printLogo();
 	startUp();
 
-	dealerCards.push_back(dist(rd));	//gives dealer 1 card
+	dealerCards.push_back(dist(rd));
+	dealerCards.push_back(dist(rd));		//gives dealer 2 cards
 	cardTranslator(dealerCards, dealerTotal);
 
 	playerCards.push_back(dist(rd));
-
 	playerCards.push_back(dist(rd));	
 	cardTranslator(playerCards, playerTotal); //gives player 2 cards
 
-	//	dealerCards.push_back(dist(rd));	<-- this has to be hidden somehow
+	/*
+	if (playerTotal == 21 || dealerTotal != 21) {
+		showCards();
+		cout << "Player's Blackjack!";
+		money += (bet / 2) * 3;
+	}
+	else if (playerTotal == 21 || dealerTotal == 21) {
+		showCards();
+		cout << "It's a push!";
+		money += bet;
+	}
+	//This is not good. To be reworked later
+	*/
 
 	game();
 
-//TODO: make the card dealing repetable (duh)
-							
-//TODO: add a something to "translate"  1,11,12 and 13 to A,J,Q and K
-	
-	system("pause");
-	return 0;
+	return 1;
 }
 
 void printLogo()
@@ -68,6 +74,8 @@ void printLogo()
 //prints logo
 
 void startUp() {
+
+	bet = 0;
 
 	cout << "You currently have " << money << " chips." << endl;
 	cout << "how much do you want to bet?: ";
@@ -88,11 +96,6 @@ void startUp() {
 	}
 	}
 
-//asks the user how much they want to bet 
-
-
-//saves and removes the bet from the player's money
-
 void showCards() {
 
 	map<int, char> cards;
@@ -105,13 +108,18 @@ void showCards() {
 	cards[12] = 'Q';		
 	cards[13] = 'K';	//translates the values into chars to be displayed
 	
+
 	cout << "Dealer card(s): ";
-	for (int i = 0; i < size(dealerCards); i++ ) {
+	if(dealerTurn = 1){		//display all of the dealer's cards only if its their turn
+		for (int i = 0; i < size(dealerCards); i++ ) {
 
-		cout << cards[dealerCards[i]] << ' ';
+			cout << cards[dealerCards[i]] << ' ';
 	
+		}
 	}
-
+	else {		//display only the non-hidden dealer card
+		cout << cards[dealerCards[0]];
+	}
 	cout << endl;
 
 	cout << "Player cards: ";
@@ -121,12 +129,11 @@ void showCards() {
 
 	cout << endl;
 }
-//shows all of the dealer AND the player's cards
+//shows the cards correctly according to whose turn it is
 
 void game() {
 
 	char choice;
-
 	showCards();
 
 	cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
@@ -136,47 +143,79 @@ void game() {
 	{
 	case 'H': case 'h': {
 		playerCards.push_back(dist(rd));
-		
-	
-		cardTranslator(playerCards, playerTotal);	//this works!? 
+		cardTranslator(playerCards, playerTotal);	//this works. 
 
-		if (playerTotal > 21) {	
+		if (playerTotal > 21) {
 			showCards();
 			cout << "Player Bust!" << endl;
-			break;
+			main();
 		}
-		game();	
+		game();
 		// check to see if all the cards combined are >21, if they are break and auto-loose, else continue (call the "game()" function)
 	}
 	case 'S': case 's': {
-		break;		//breaks the switch case, and makes the dealer get cards
+		endGame(); //goes to the fuction that gives the dealer their cards
 	}
 	case 'D': case 'd': {
 		if (bet*2 <= money){
-			bet *= 2; money -= bet/2;
+			bet *= 2;		//if the player has enough cash double the bet
+			money -= bet/2; //and take away the money
+			playerCards.push_back(dist(rd));
+			cardTranslator(playerCards, playerTotal);	//give the player the cards
+			showCards();
+				if (playerTotal > 21) {		//if they bust that's it
+					showCards();
+					cout << "Player Bust!" << endl;
+					Sleep(3000);			//let them look at what they have done
+					main();
+				}
+				else {
+					endGame();	//if they don't they have to go against the dealer
+				}
 		}
 		else {
-		cout << "Not enough money to Double down!" << endl;
+		cout << "Not enough money to Double down! (your current bet is " << bet << " and you only have " << money << " money)" << endl;	//if they're dumb then remind them
 		game();
 		}
 		break;
 	}
-	case 'G': case 'g': {
-		money += bet / 2;
-		break;
+	case 'G': case 'g': {	//Surrender
+		money += bet / 2;	//gives the user half of their bet
+		cout << "You have been given back half of your bet (" << bet / 2 << ")";
+		Sleep(3000);
+		main();				//restarts the program
 	}
-	case 'C': case 'c': {
-		showCards();
-		game();
+	case 'C': case 'c': {	//to see the cards	
+		game();				//Sends you back at the beginning, where there is showCards()... oh the illusion...
 	}
 	default:
-		cout << "invalid option! " << endl;	//says the user put in an invalid value	
+		cout << "invalid option! " << endl;	//just in case the user is an idiot who tries to cheat (or missclicks)
 		game();								//calls the function and makes the player pick again
 	}
 
 }
 
-void cardTranslator(vector<int>& whoseCards, int& whoseTotal) {
+void endGame() {
+	dealerTurn = 1;
+	while (dealerTotal < 17) {
+		dealerCards.push_back(dist(rd));
+		cardTranslator(dealerCards, dealerTotal);
+		showCards();
+		Sleep(1000)
+		}
+	if (dealerTotal > 21 || playerTotal > dealerTotal) {
+		cout << "Player wins!";
+		money += bet * 2;
+	}
+	else {
+		cout << "Dealer wins!";
+	}
+	Sleep(3000);
+
+	main();
+}
+
+void cardTranslator(vector<int> whoseCards, int& whoseTotal) {
 	
 	whoseTotal = 0;
 	
