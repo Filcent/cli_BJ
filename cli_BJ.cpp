@@ -209,17 +209,18 @@ void game() {
 
 void endGame() {
 	dealerTurn = 1;
+	showCards();
 	while (dealerTotal < 17) {
 		dealerCards.push_back(dist(rd));
 		cardTranslator(dealerCards, dealerTotal);
 		showCards();
-		Sleep(1000);
+		Sleep(1500);
 		}
 	if(playerTotal == dealerTotal){
 		cout << "It's a push! \n";
 		money += bet;
 	}
-	if (dealerTotal > 21 || playerTotal > dealerTotal) {
+	else if (dealerTotal > 21 || playerTotal > dealerTotal) {
 		cout << "Player wins! \n";
 		money += bet * 2;
 	}
