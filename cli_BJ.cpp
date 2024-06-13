@@ -68,7 +68,8 @@ void printLogo()
 //prints logo
 
 void startUp() {
-	
+
+	char cashOut;
 
 	if (money == 0) {
 		cout << "You currently have... ";
@@ -80,7 +81,36 @@ void startUp() {
 		exit(0);
 	}
 
-	cout << "You currently have " << money << " chips." << endl;
+	cout << "You currently have " << money << " chips. (press 'C' to cash out, anything else to play)" << endl;
+	cin >> cashOut;
+	if (cashOut == 'c' || cashOut == 'C') {
+		string name;
+
+		cout << "You think about walking home with your money... besides, what even is your name? (C to go back to the blackjack table): \n";
+		cin >> name;
+		if(name == "C" || name == "c"){
+			cout << "now that you think about it, playing a few more hands doesn't sound so bad afterall. What's the worse that can happen, right?";
+		}
+		else{
+			ofstream hiScore;
+			hiScore.open("Scoreboard.txt", fstream::app);
+			hiScore << name << " : " << money << "\n";
+			hiScore.close();
+			if (money > 200) {
+				cout << "*You go home with your money, satisfied you won something* \n";
+			}
+			else if (money > 1000) {
+				cout << "*you go home feeling like a little kid. That's a lot of money right there!* \n";
+			}
+			if (money < 200) {
+				cout << "*You go home with your wallet feeling a little lighter than before. You wonder how you're going to make that money back...* \n";
+			}
+			if (money = 200) {
+				cout << "*You go home on a net zero. Hey, winning nothing that's better than loosing something!* \n";
+			}
+			exit(0);
+		}
+	}
 	betting();
 }
 
