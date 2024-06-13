@@ -209,6 +209,7 @@ void game() {
 
 void endGame() {
 	dealerTurn = 1;
+	showCards();
 	while (dealerTotal < 17) {
 		dealerCards.push_back(dist(rd));
 		cardTranslator(dealerCards, dealerTotal);
