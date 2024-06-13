@@ -127,6 +127,7 @@ void startUp() {
 			if (money == 200) {
 				std::cout << "*You go home on a net zero. Hey, winning nothing that's better than loosing something!* \n";
 			}
+			system("pause");
 			exit(0);
 		}
 	}
