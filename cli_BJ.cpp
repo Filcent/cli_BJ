@@ -13,8 +13,8 @@ std::vector <int> dealerCards = {};
 std::vector <int> playerCards = {};
 int playerTotal = 0;
 int dealerTotal = 0;
-int* a = &bet;
 bool dealerTurn = 0;
+bool hasHit = 0;
 //make all of this shit into a class or two or something
 
 void printLogo();
@@ -36,6 +36,7 @@ int main() {
 	playerCards.clear();
 	playerTotal = 0;
 	dealerTotal = 0;
+	hasHit = 0;
 	//initializes everything back to 0
 
 	system("cls");
@@ -55,6 +56,10 @@ int main() {
 			endGame();			//if the blackjack is a push it gets handled by the endGame function
 		}
 		else {
+			showCards();
+			Sleep(1000);
+			dealerTurn = 1;
+			showCards();
 			std::cout << "Player blackjack! \n";
 			money += (bet / 2) * 3;		//if not, the player gets payed 3:2
 			system("pause");
@@ -63,6 +68,10 @@ int main() {
 	} //handles player blackjack
 
 	if (dealerTotal == 21) {
+		showCards();
+		Sleep(1000);
+		dealerTurn = 1;
+		showCards();
 		std::cout << "Dealer has a natural... \n";
 		system("pause");
 		main();
@@ -200,13 +209,19 @@ void game() {
 
 	char choice;
 	showCards();
-
-	std::cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
+	if(hasHit == 0){
+		std::cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
+	}
+	else {
+		std::cout << "[H]it or [S]tay? ('C' to show cards again)";
+	}
+	
 	std::cin >> choice;
 
 	switch (choice)
 	{
 	case 'H': case 'h': {
+		hasHit = 1;
 		playerCards.push_back(dist(rd));
 		cardTranslator(playerCards, playerTotal);	//this works. 
 
@@ -223,6 +238,11 @@ void game() {
 		endGame(); //goes to the fuction that gives the dealer their cards
 	}
 	case 'D': case 'd': {
+		if (hasHit == 1) {
+			std::cout << "You cannot double down after you hit! \n";	//just like irl
+			game();
+		}
+
 		if (bet <= money) {
 			bet *= 2;		//if the player has enough cash double the bet
 			money -= bet / 2; //and take away the money
@@ -246,6 +266,10 @@ void game() {
 		break;
 	}
 	case 'G': case 'g': {	//Surrender
+		if (hasHit == 1) {
+			std::cout << "You cannot surrender after you hit! \n";
+			game();
+		}
 		money += bet / 2;	//gives the user half of their bet
 		std::cout << "You have been given back half of your bet (" << bet / 2 << ")";
 		Sleep(3000);
@@ -292,21 +316,15 @@ void endGame() {
 void cardTranslator(std::vector<int> whoseCards, int& whoseTotal) {
 
 	whoseTotal = 0;
+	bool hasAce = 0;
 
 	for (int i = 0; i < size(whoseCards); i++) {
 
 		switch (whoseCards[i])
 		{
 		case 1: {
-
-			if (whoseTotal + 11 <= 21) {
-
-				whoseTotal += 11;
-			}
-			else {
-				whoseTotal += 1;
-			}
-			break;
+			hasAce = 1;
+			whoseTotal += 1;	//ace is worth 1, if it can then it will be 11 thanks to the if down there
 		}
 
 		case 11:
@@ -322,6 +340,12 @@ void cardTranslator(std::vector<int> whoseCards, int& whoseTotal) {
 		}
 		}
 
+	}
+	if (hasAce == 1) {
+		if (whoseTotal+10 < 21) {	//if the ace can be worth 11, it will be. It is impossible for two aces to be worth both 11.
+			whoseTotal += 10;		//this will maybe work
+		}
+		else{}
 	}
 }
 //this also updates whoseTotal 
