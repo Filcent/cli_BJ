@@ -9,12 +9,18 @@
 
 int money = 200;
 int bet = 0;
+
 std::vector <int> dealerCards = {};
 std::vector <int> playerCards = {};
+std::vector <int> playerSplit = {};
+
 int playerTotal = 0;
+int splitTotal = 0;
 int dealerTotal = 0;
+
 bool dealerTurn = 0;
 bool hasHit = 0;
+bool canSplit = 0;
 //make all of this shit into a class or two or something
 
 void printLogo();
@@ -31,12 +37,16 @@ std::uniform_int_distribution<int> dist(1, 13);
 
 int main() {
 
-	dealerTurn = 0;
+	bet = 0;
 	dealerCards.clear();
 	playerCards.clear();
+	playerSplit.clear();
 	playerTotal = 0;
+	splitTotal = 0;
 	dealerTotal = 0;
 	hasHit = 0;
+	dealerTurn = 0;
+	canSplit = 0;
 	//initializes everything back to 0
 
 	system("cls");
@@ -78,6 +88,9 @@ int main() {
 	}
 	// the push should be handled by the if above. ATM, there is no insurance
 
+	if (playerCards[0] == playerCards[1]) {
+		canSplit = 1;
+	}
 	game();
 
 	return 1;	//if this happens, something REALLY bad happened
@@ -150,7 +163,7 @@ void startUp() {
 }
 
 void betting() {
-	bet = 0;
+
 	std::cout << "how much do you want to bet?: ";
 
 	std::cin >> bet;
@@ -200,20 +213,31 @@ void showCards() {
 	for (int i = 0; i < size(playerCards); i++) {
 		std::cout << cards[playerCards[i]] << ' ';
 	}
+	if (playerSplit[0] != 0) { //if there is a card in there it means the player has split
+		std::cout << "\nSplit cards: ";
+		for (int i = 0; i < size(playerSplit); i++) {
+			std::cout << cards[playerSplit[i]] << ' ';
+		}
+	}
 
 	std::cout << std::endl;
 }
 //shows the cards correctly according to whose turn it is
 
-void game() {
+void game() {	//game(whoseCards, whoseTotal) to make it possible to reuse the function while splitting?
 
 	char choice;
 	showCards();
+
 	if(hasHit == 0){
-		std::cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";
+		if(canSplit = 1)
+			std::cout << "[H]it, [S]tay, [D]ouble down, S[p]lit or [G]ive up (surrender)? ('C' to show cards again): ";	//if the player can split and hasn't hit yet
+		else {
+			std::cout << "[H]it, [S]tay, [D]ouble down or [G]ive up (surrender)? ('C' to show cards again): ";			//if the player can't split and hasn't hit yet
+		}
 	}
 	else {
-		std::cout << "[H]it or [S]tay? ('C' to show cards again)";
+		std::cout << "[H]it or [S]tay? ('C' to show cards again)";		//if the player hit already
 	}
 	
 	std::cin >> choice;
@@ -277,6 +301,29 @@ void game() {
 	}
 	case 'C': case 'c': {	//to see the cards	
 		game();				//Sends you back at the beginning, where there is showCards()... oh the illusion...
+	}
+	case 'P': case 'p': 
+	{
+		if (canSplit == 0) {
+			std::cout << "You cannot split this hand!";
+			game();
+		}
+		if (hasHit == 1) {
+			std::cout << "You cannot split after hitting!";
+			game();
+		}
+		if (hasHit == 0 || canSplit == 1) {	//kinda useless, doing this for future me to understand
+			
+			playerSplit[0] = playerCards[1];	//now the player has 2 hands
+			playerCards.pop_back();
+			
+			playerCards.push_back(dist(rd));	
+			playerSplit.push_back(dist(rd));	//gives both hands an extra card
+
+
+			showCards();		
+							//now I see why arguments in functions are important
+		}
 	}
 	default:
 		std::cout << "invalid option! " << std::endl;	//just in case the user is an idiot who tries to cheat (or missclicks)
